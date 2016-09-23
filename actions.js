@@ -1,12 +1,12 @@
 var math = require('mathjs');
 var config = require('config');
 var types = require('./types.js');
-var events = require('events');
+var util = require('./util.js');
 
 var modelName = config.get("modelName");
 var operators = config.get("operators");
 var commandUserWhiteList = [modelName].concat(operators);
-var eventEmitter = new events.EventEmitter();
+var eventEmitter = util.eventEmitter;
 
 module.exports = {};
 
@@ -48,26 +48,24 @@ function buildPM(response, triggerMsg) {
 
 function process_tip(msg) {
     var responses = new types.Responses();
-    if (msg.tokens % 23 == 0) {
-        var numBlocks = msg.tokens / 23;
-        actionQueue.push(numBlocks + " Jenga Blocks for " + msg.user);
+    if (msg.tokens % 33 == 0) {
+        var numBlocks = msg.tokens / 33;
+        actionQueue.push(new types.Action(msg.user, msg.uid, msg.text, numBlocks + " Jenga Blocks"));
     } else if (msg.tokens % 66 == 0) {
         var numRolls = msg.tokens / 66;
-        actionQueue.push(numRolls + " Dice Spanks for " + msg.user);
+        actionQueue.push(new types.Action(msg.user, msg.uid, msg.text, numRolls + " Dice Spanks"));
     } else if (msg.tokens % 55 == 0) {
         var tickets = msg.tokens/55;
-        var resp = tickets + "x Raffle Tickets for " + msg.user;
-        if (msg.text !== undefined) {
-          resp += ": " + msg.text; 
-        }
-        actionQueue.push(resp);
+        actionQueue.push(new types.Action(msg.user, msg.uid, msg.text, tickets + "x Raffle Tickets"));
     } else if (msg.tokens % 222 == 0) {
         var numMonths = msg.tokens / 222;
-        actionQueue.push(numMonths + " months of snapchat for " + msg.user);
+        actionQueue.push(new types.Action(msg.user, msg.uid, msg.text, numMonths + " months of snapchat"));
     } else if (msg.tokens == 75) {
-        actionQueue.push("Boobs for " + msg.user);
+        actionQueue.push(new types.Action(msg.user, msg.uid, msg.text, "Boobs Flash"));
     } else if (msg.tokens == 100) {
-        actionQueue.push("BJ tease for " + msg.user);
+        actionQueue.push(new types.Action(msg.user, msg.uid, msg.text, "BJ tease"));
+    } else if (msg.tokens >= 10) {
+        actionQueue.push(new types.Action(msg.user, msg.uid, msg.text, msg.tokens + " token tip"));
     }
     return responses;
 }
@@ -115,8 +113,8 @@ function process_chat(msg) {
         if (actionQueue.length == 0) {
           responses.privateResponses.push(buildPM("Queue is empty", msg));
         } else {
-          for (i = 0; i < actionQueue.length; i++) {
-            responses.privateResponses.push(buildPM(i + ": " + actionQueue[i], msg));
+          for (i = 0; i < math.min(actionQueue.length,5); i++) {
+            responses.privateResponses.push(buildPM(i + ": " + actionQueue[i].action + ", " + actionQueue[i].user + ", " + actionQueue[i].minutes_ago() + " minute(s) ago", msg));
           }
         }
       }
@@ -125,7 +123,7 @@ function process_chat(msg) {
           responses.privateResponses.push(buildPM("Queue is empty", msg));
         } else {
           var doneAction = actionQueue.shift();
-          responses.privateResponses.push(buildPM("Done with: " + doneAction, msg));
+          responses.privateResponses.push(buildPM("Done with: " + doneAction.action + ", " + doneAction.user, msg));
         }
       }
       else if (msg.text.startsWith("testtip")) {

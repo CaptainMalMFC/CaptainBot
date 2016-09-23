@@ -27,7 +27,8 @@
     "config-heroku": "^0.1.1-a",
     "foreman": "^1.4.1",
     "mathjs": "^3.4.1",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "moment": "^2.14.1"
   },
   "engines": {
     "node": "4.4.7"

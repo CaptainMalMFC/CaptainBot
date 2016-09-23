@@ -1,3 +1,4 @@
+var moment = require('moment');
 module.exports = {};
 
 function ChatEvent (user, uid, text, src) {
@@ -28,3 +29,15 @@ function PrivateMsg(user, uid, text) {
   this.text = text;
 }
 module.exports.PrivateMsg = PrivateMsg;
+
+function Action(user, uid, text, action, time) {
+  this.user = user;
+  this.uid = uid;
+  this.action = action;
+  this.text = text;
+  this.time = moment();
+  this.minutes_ago = function() {
+    return moment.duration(moment() - this.time).minutes();
+  }
+}
+module.exports.Action = Action;

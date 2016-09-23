@@ -1,12 +1,10 @@
 // TODO: exception handling
-console.log("Start");
 var mfc = require("MFCAuto");
-console.log("Imported MFC");
-var events = require('events');
 var config = require('config');
 var customFunctions = require('./custom_functions.js');
 var types = require('./types.js');
 var actions = require('./actions.js');
+var util = require('./util.js');
 
 var botUsername = config.get("botUsername");
 var botHashedPassword = config.get("botHashedPassword");
@@ -18,7 +16,7 @@ var periodicResponses = config.get("periodicResponses");
 var live = config.get("live");
 var modelEmotes = config.get("modelEmotes");
 
-var eventEmitter = new events.EventEmitter();
+var eventEmitter = util.eventEmitter;
 var client = new mfc.Client();
 var modelId = 0;
 var nextPeriodic = 0;
@@ -137,7 +135,7 @@ client.on("USERNAMELOOKUP", function(packet){
       console.log("Joining " + modelName + "'s room. (uid:" + modelId + ")");
       client.joinRoom(modelId);
       if (live) {
-        client.sendPM(modelId, ":robot Hello " + modelName + "! I am your bot!");
+        //client.sendPM(modelId, ":robot Hello " + modelName + "! I am your bot!");
       }
       setInterval(function() {
         eventEmitter.emit("periodic");
