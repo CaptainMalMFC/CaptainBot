@@ -1,11 +1,10 @@
 // TODO: exception handling
 var mfc = require("MFCAuto");
-var config = require('config');
 var customFunctions = require('./custom_functions.js');
 var types = require('./types.js');
-var actions = require('./actions.js');
 var util = require('./util.js');
 
+var config = util.config;
 var botUsername = config.get("botUsername");
 var botHashedPassword = config.get("botHashedPassword");
 var modelName = config.get("modelName");
@@ -15,12 +14,18 @@ var periodicEventInterval = config.get("periodicEventInterval");
 var periodicResponses = config.get("periodicResponses");
 var live = config.get("live");
 var modelEmotes = config.get("modelEmotes");
+var actionModuleFiles = config.get("actions");
+var actionModules = []
+
+for (a in actionModuleFiles) {
+  actionModules.push(require(actionModuleFiles[a]));
+  console.log("Loaded actions from " + actionModuleFiles[a]);
+}
 
 var eventEmitter = util.eventEmitter;
 var client = new mfc.Client();
 var modelId = 0;
 var nextPeriodic = 0;
-
 
 // EVENT PARSING FUNCTIONS
 //Listen for chat messages and print them
@@ -61,24 +66,24 @@ client.on("TOKENINC", function(packet){
 // EVENT HANDLERS
 // Message event handler
 eventEmitter.on("msg", function(msg) {
-    console.log("Message Event!");
-    console.log("--User: " + msg.user + "(" + msg.uid + ")");
-    console.log("--Source: " + msg.src);
-    console.log("--Message: " + msg.text);
     //loop through chat functions, find and execute matches
-    var responses = actions.process_chat(msg);
-    eventEmitter.emit("sendResponses",responses);
+    for (a in actionModules) {
+        var responses = actionModules[a].process_chat(msg);
+        if (responses.has_responses()) {
+            eventEmitter.emit("sendResponses",responses);
+        }
+    }
 });
 
 // Tip event handler
 eventEmitter.on("tip", function(msg) {
-    console.log("Tip Event!");
-    console.log("--User: " + msg.user + "(" + msg.uid + ")");
-    console.log("--Message: " + msg.text);
-    console.log("--Amount: " + msg.tokens);
     //loop through tip functions, find and execute matches
-    var responses = actions.process_tip(msg);
-    eventEmitter.emit("sendResponses",responses);
+    for (a in actionModules) {
+        var responses = actionModules[a].process_tip(msg);
+        if (responses.has_responses()) {
+            eventEmitter.emit("sendResponses",responses);
+        }
+    }
 });
 
 // Response Helper
@@ -141,8 +146,9 @@ client.on("USERNAMELOOKUP", function(packet){
         eventEmitter.emit("periodic");
       }, periodicEventInterval * 1000);
       console.log("Joined.");
-    } else if (operators.indexOf(packet.sMessage.nm) != -1) {
-      client.sendPM(packet.sMessage.uid, ":robot Hello " + packet.sMessage.nm + "! You are an operator of " + botUsername + " in " + modelName + "'s Room!");  	
+    } else if (operators.indexOf(packet.sMessage.nm) == 0) {
+      console.log("Sending welcome to " + packet.sMessage.nm);
+      client.sendPM(packet.sMessage.uid, "Hello " + packet.sMessage.nm + "! You are an operator of " + botUsername + " in " + modelName + "'s Room!");
     }
 });
 

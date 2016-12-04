@@ -20,6 +20,10 @@ module.exports.TipEvent = TipEvent;
 function Responses() {
   this.chatResponse = undefined;
   this.privateResponses = [];
+
+  this.has_responses = function() {
+    return (this.chatResponse != undefined) || (this.privateResponses.length > 0);      
+  }
 }
 module.exports.Responses = Responses;
 
