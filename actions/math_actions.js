@@ -1,4 +1,4 @@
-var types = require('./types.js');
+var types = require('../types.js');
 var math = require('mathjs');
 
 module.exports = {};

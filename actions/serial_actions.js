@@ -1,8 +1,8 @@
 var config = require('config');
-var types = require('./types.js');
+var types = require('../types.js');
 
 var SerialPort = require("serialport");
-var serialPort = new SerialPort(config.get("serialport");
+var serialPort = new SerialPort(config.get("serialport"));
 var serialOn = false;
 
 var modelName = config.get("modelName");

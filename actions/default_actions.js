@@ -1,6 +1,6 @@
 var config = require('config');
-var types = require('./types.js');
-var util = require('./util.js');
+var types = require('../types.js');
+var util = require('../util.js');
 
 var modelName = config.get("modelName");
 var operators = config.get("operators");

@@ -18,7 +18,7 @@ var actionModuleFiles = config.get("actions");
 var actionModules = []
 
 for (a in actionModuleFiles) {
-  actionModules.push(require(actionModuleFiles[a]));
+  actionModules.push(require("./actions/" + actionModuleFiles[a]));
   console.log("Loaded actions from " + actionModuleFiles[a]);
 }
 
