@@ -1,4 +1,4 @@
-var types = require('../types.js');
+var util = require("../util.js");
 
 var jokes = ["If i had a dollar for every girl that found me unattractive, they would eventually find me attractive.",
              "Today a man knocked on my door and asked for a small donation towards the local swimming pool. I gave him a glass of water.",
@@ -40,28 +40,18 @@ var yoshijokes = ["I'd rather ride you than a Yoshi any day!",
 
 var whojokes = ["Why did the Face of Boe not go to the party? Because he had no body to go with"];
 
-module.exports = {};
-
-function process_tip(msg){
-    var responses = new types.Responses();
-    return responses;
-}
-module.exports.process_tip = process_tip;
-
 function process_chat(msg) {
-    var responses = new types.Responses();
     if(msg.text == "joke") {
-       responses.chatResponse = jokes[Math.floor(Math.random() * jokes.length)]  
+       util.sendChat(jokes[Math.floor(Math.random() * jokes.length)]);  
     }
     else if(msg.text == "dirtyjoke") {
-       responses.chatResponse = dirtyjokes[Math.floor(Math.random() * dirtyjokes.length)]  
+       util.sendChat(dirtyjokes[Math.floor(Math.random() * dirtyjokes.length)]);
     }
     else if(msg.text == "yoshijoke") {
-       responses.chatResponse = yoshijokes[Math.floor(Math.random() * yoshijokes.length)]  
+       util.sendChat(yoshijokes[Math.floor(Math.random() * yoshijokes.length)]);  
     }
     else if(msg.text == "whojoke") {
-       responses.chatResponse = whojokes[Math.floor(Math.random() * whojokes.length)]  
+       util.sendChat(whojokes[Math.floor(Math.random() * whojokes.length)]);  
     }
-    return responses;
 }
-module.exports.process_chat = process_chat;
+exports.process_chat = process_chat;

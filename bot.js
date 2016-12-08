@@ -68,9 +68,8 @@ client.on("TOKENINC", function(packet){
 eventEmitter.on("msg", function(msg) {
     //loop through chat functions, find and execute matches
     for (a in actionModules) {
-        var responses = actionModules[a].process_chat(msg);
-        if (responses.has_responses()) {
-            eventEmitter.emit("sendResponses",responses);
+        if (actionModules[a].process_chat != undefined) {
+          actionModules[a].process_chat(msg);
         }
     }
 });
@@ -79,27 +78,25 @@ eventEmitter.on("msg", function(msg) {
 eventEmitter.on("tip", function(msg) {
     //loop through tip functions, find and execute matches
     for (a in actionModules) {
-        var responses = actionModules[a].process_tip(msg);
-        if (responses.has_responses()) {
-            eventEmitter.emit("sendResponses",responses);
+        if (actionModules[a].process_tip != undefined) {
+          actionModules[a].process_tip(msg);
         }
     }
 });
 
-// Response Helper
-eventEmitter.on("sendResponses", function(responses) {
-  console.log("Send Responses Event!");
-  if (responses.chatResponse !== undefined) {
-    console.log("Sending to Chatroom: " + responses.chatResponse);
-    if (live) {
-      client.sendChat(modelId, responses.chatResponse);
-    }
+// Response Helpers
+eventEmitter.on("sendChat", function(chatMsg) {
+  console.log("Send Chat Event!");
+  console.log("Sending to Chatroom: " + chatMsg);
+  if (live) {
+    client.sendChat(modelId, chatMsg);
   }
-  for (x in responses.privateResponses) {
-    var privMsg = responses.privateResponses[x];
-    console.log("Sending to " + privMsg.user + ": " + privMsg.text);
-    client.sendPM(privMsg.uid, privMsg.text);
-  }
+});
+
+eventEmitter.on("sendPM", function(privMsg) {
+  console.log("Send PM Event!");
+  console.log("Sending to " + privMsg.user + ": " + privMsg.text);
+  client.sendPM(privMsg.uid, privMsg.text);
 });
 
 // Periodic event handler
