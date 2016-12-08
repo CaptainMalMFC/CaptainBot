@@ -1,0 +1,9 @@
+{
+  "botUsername": "Bot_Username",
+  "botHashedPassword": "HashedPasswordFromCookie",
+  "modelName": "ModelName",
+  "operatorName": "MrOperator",
+  "periodicEventInterval": 60,
+  "live": false,
+  "periodicResponses": [":robot","This is a periodic message"]
+}

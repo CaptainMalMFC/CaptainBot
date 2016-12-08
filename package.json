@@ -1,0 +1,39 @@
+{
+  "name": "captainbot",
+  "version": "0.1.0",
+  "description": "A Free MFC Chat Bot",
+  "main": "bot.js",
+  "scripts": {
+    "start": "env NODE_ENV=AnimeAnnie node bot.js",
+    "web": "node bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CaptainMalMFC/CaptainBot.git"
+  },
+  "keywords": [
+    "mfc",
+    "chat"
+  ],
+  "author": "CaptainMalMFC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CaptainMalMFC/CaptainBot/issues"
+  },
+  "homepage": "https://github.com/CaptainMalMFC/CaptainBot#readme",
+  "dependencies": {
+    "MFCAuto": "zombiealex/MFCAuto",
+    "config": "^1.21.0",
+    "config-heroku": "^0.1.1-a",
+    "express": "^4.14.0",
+    "foreman": "^1.4.1",
+    "mathjs": "^3.4.1",
+    "minimist": "^1.2.0",
+    "moment": "^2.14.1",
+    "morgan": "^1.7.0",
+    "serialport": "^4.0.1"
+  },
+  "engines": {
+    "node": "4.4.7"
+  }
+}
